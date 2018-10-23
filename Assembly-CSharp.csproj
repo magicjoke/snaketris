@@ -60,10 +60,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assets\GroundCheck.cs" />
     <Compile Include="Assets\NewSnake.cs" />
     <Compile Include="Assets\Respawning.cs" />
     <Compile Include="Assets\Scripts\FollowAI.cs" />
+    <Compile Include="Assets\Scripts\GroundCheck.cs" />
     <Compile Include="Assets\Scripts\Movementz.cs" />
     <Compile Include="Assets\Scripts\MovementzFollow.cs" />
     <Compile Include="Assets\Scripts\PoseChecker.cs" />

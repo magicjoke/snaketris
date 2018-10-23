@@ -9,6 +9,7 @@ TagManager:
   - Resp
   - Ground
   - Tail
+  - CompleteSnake
   layers:
   - Default
   - TransparentFX

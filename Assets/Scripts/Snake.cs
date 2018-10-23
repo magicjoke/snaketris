@@ -9,10 +9,10 @@ public class Snake : MonoBehaviour {
 
 	public GameObject tailPrefab;
 	public GameObject food;
-	public Transform rBorder;
-	public Transform lBorder;
-	public Transform tBorder;
-	public Transform bBorder;
+	//public Transform rBorder;
+	//public Transform lBorder;
+	//public Transform tBorder;
+	//public Transform bBorder;
 
 	public float speed = 0.3f;
 
@@ -34,13 +34,42 @@ public class Snake : MonoBehaviour {
     private GameObject respawn;
 
     public GameObject[] Tails;
-	
-	void Start () {
+
+    private GameObject completeSnak;
+
+
+    public bool testBool = false;
+
+    private GameObject snakeBody;
+
+    public Transform groundCheck;
+    public float groundCheckRadius;
+    public LayerMask whatIsGround;
+    public bool grounded;
+
+
+    void FixedUpdate()
+    {
+        grounded = Physics2D.OverlapCircle(groundCheck.position, groundCheckRadius, whatIsGround);
+
+    }
+
+    void Start () {
+
+        testBool = false;
 
         respawn = GameObject.FindGameObjectWithTag("Resp");
 
-		//SpawnFood ();
-		InvokeRepeating("Movement", speed, speed);
+        completeSnak = GameObject.FindGameObjectWithTag("CompleteSnake");
+
+        // -- //
+        snakeBody = GameObject.FindGameObjectWithTag("CompleteSnake");
+        grounded = false;
+        // -- //
+
+
+        //SpawnFood ();
+        InvokeRepeating("Movement", speed, speed);
         StartGrow();
 
         Tails = GameObject.FindGameObjectsWithTag("Tail");
@@ -48,14 +77,21 @@ public class Snake : MonoBehaviour {
 	
 	void Update () {
 
-        if(mutate == false)
+        if (grounded)
+        {
+            snakeBody.GetComponent<TailScript>().freeze = true;
+            //test.GetComponent<Snake>().testBool = true;
+            //Destroy(this);
+        }
+
+
+        if (mutate == false)
         {
 
             if (Input.GetKey (KeyCode.RightArrow) && horizontal) {
 			    horizontal = false;
 			    vertical = true;
                 vector = Vector2.right;
-                //vector = Vector3.Lerp(this.transform.position, new Vector3(this.transform.position.x+1,this.transform.position.y,this.transform.position.z),speed);
 		    } else if (Input.GetKey (KeyCode.UpArrow) && vertical) {
 			    horizontal = true;
 			    vertical = false;
@@ -92,31 +128,69 @@ public class Snake : MonoBehaviour {
 
         if (Input.GetKeyDown(KeyCode.D))
         {
-            //Instantiate(newHead, new Vector3(respawn.transform.position.x, this.transform.position.y), Quaternion.identity);
-            //Destroy(this);
+            completeSnak.gameObject.tag = "Untagged";
             CancelInvoke();
             Debug.Log("CutTail");
             //tailOn = true;
 
-            //Tail.GetComponent<TailScript>().enabled = true;
+            completeSnak.GetComponent<TailScript>().enabled = true;
 
-            //Tails[LastTail].GetComponent<TailScript>().enabled = true;
-            //Instantiate(tailPrefab, transform.position, Quaternion.identity);
+
+            //this.gameObject.layer = LayerMask.NameToLayer("Ground");
+
+            //foreach (GameObject oneTail in Tails)
+            //{
+            //    oneTail.gameObject.layer = LayerMask.NameToLayer("Ground");
+            //}
+
+        }
+
+        if(eat == true)
+        {
+            completeSnak.gameObject.tag = "Untagged";
+            CancelInvoke();
+            Debug.Log("Nyam");
+
+            completeSnak.GetComponent<TailScript>().enabled = true;
+        }
+
+        if (testBool == true)
+        {
+
+            this.gameObject.layer = LayerMask.NameToLayer("Ground");
+
             foreach (GameObject oneTail in Tails)
             {
-                oneTail.GetComponent<TailScript>().enabled = true;
-                //if(oneTail.GetComponent<TailScript>().grounded == true)
-                //{
-                //    oneTail.GetComponent<TailScript>().grounded = true;
-                //}
-                //oneTail.GetComponent<TailScript>().grounded = true;
+                oneTail.gameObject.layer = LayerMask.NameToLayer("Ground");
             }
 
-            this.GetComponent<Snake>().enabled = false;
+            //StartCoroutine(deleteAfter());
 
-            //tail.Count = 0;
-            //this.GetComponent<Snake>().tail.Count = 0;
         }
+        //} else
+        //{
+        //    this.gameObject.layer = LayerMask.NameToLayer("Default");
+
+        //    foreach (GameObject oneTail in Tails)
+        //    {
+        //        oneTail.gameObject.layer = LayerMask.NameToLayer("Default");
+        //    }
+        //}
+
+
+        //foreach (GameObject oneTail in Tails)
+        //{
+        //    oneTail.gameObject.layer = LayerMask.NameToLayer("Ground");
+        //}
+        //if(testBool == false)
+        //{
+        //    this.gameObject.layer = LayerMask.NameToLayer("Default");
+
+        //    foreach (GameObject oneTail in Tails)
+        //    {
+        //        oneTail.gameObject.layer = LayerMask.NameToLayer("Default");
+        //    }
+        //}
 
     }
 
@@ -147,7 +221,14 @@ public class Snake : MonoBehaviour {
         tail.Insert(0, g2.transform);
     }
 
-
+    //IEnumerator deleteAfter()
+    //{
+    //    if(testBool == true)
+    //    {
+    //        yield return new WaitForSeconds(0.3f);
+    //        Destroy(this);
+    //    }
+    //}
 
 	void Movement() {
 
